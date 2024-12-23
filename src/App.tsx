@@ -1,11 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Board from './components/board';
 
 function App() {
   return (
     <div className="App">
-      Dual n Back Board!
+      <Board/>
     </div>
   );
 }
