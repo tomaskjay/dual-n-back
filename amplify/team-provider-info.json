@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-dualnbackapp-dev-30096-authRole",
+      "UnauthRoleArn": "arn:aws:iam::913524935964:role/amplify-dualnbackapp-dev-30096-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::913524935964:role/amplify-dualnbackapp-dev-30096-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-dualnbackapp-dev-30096-deployment",
+      "UnauthRoleName": "amplify-dualnbackapp-dev-30096-unauthRole",
+      "StackName": "amplify-dualnbackapp-dev-30096",
+      "StackId": "arn:aws:cloudformation:us-east-1:913524935964:stack/amplify-dualnbackapp-dev-30096/107670f0-c165-11ef-b705-0affeb4a6493",
+      "AmplifyAppId": "d1jx5w179el1um"
+    }
+  }
+}
