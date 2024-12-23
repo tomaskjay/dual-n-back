@@ -1,15 +1,24 @@
 import React from "react";
+
 import './board.css';
 
-export default function Board() {
-  const gridSize = 3;
-  const cells = Array.from({ length: gridSize * gridSize }, (_, index) => (
-    <div key={index} className="cell"></div>
-  ));
+const verticalAxis = ["1", "2", "3"];
+const horizontalAxis = ["a", "b", "c"];
 
-  return (
-    <div className="board">
-      {cells}
-    </div>
-  );
+export default function Board() {
+    let board = [];
+
+    for(let j = verticalAxis.length - 1; j >= 0; j--) {
+
+    for(let i = 0; i < horizontalAxis.length; i++) {
+        board.push(
+        <div className="tile">[{horizontalAxis[i]}{verticalAxis[j]}]</div>
+            );
+        }
+    }
+
+
+    return <div id ="board">
+        {board}
+    </div>;
 }
