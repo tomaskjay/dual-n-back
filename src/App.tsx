@@ -39,26 +39,41 @@ function App() {
     setHighlighted(null);
   };
 
-  // Event listener for when "e" or "i" is pressed
-  // "e" for audio match, "i" for visual match
+  // Capture keyboard inputs for starting/stopping the game and for user answers
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isGameRunning) return;
+      // Press "Space" to start the game if it's not running
+      if (event.key === " ") {
+        if (!isGameRunning) {
+          startGame();
+        }
+        return; // We stop here so we don't check "w"/"p"/"Escape" in the same stroke
+      }
 
-      switch (event.key.toLowerCase()) {
-        case "e":
-          userAudioRef.current = true;
-          break;
-        case "i":
-          userVisualRef.current = true;
-          break;
-        default:
-          break;
+      // Press "Escape" to stop the game if it's running
+      if (event.key === "Escape") {
+        if (isGameRunning) {
+          stopGame();
+        }
+        return;
+      }
+
+      // Only check "w" or "p" if the game is running
+      if (isGameRunning) {
+        switch (event.key.toLowerCase()) {
+          case "w":
+            userAudioRef.current = true;
+            break;
+          case "p":
+            userVisualRef.current = true;
+            break;
+          default:
+            break;
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
@@ -144,9 +159,10 @@ function App() {
       </div>
 
       <div style={{ marginTop: "20px", fontSize: "0.9rem" }}>
-        <p>
-          Press <strong>"e"</strong> for a tone match and
-          &nbsp;<strong>"i"</strong> for a tile match
+        <p className="instructions">
+          Press <strong>w</strong> for a tone match and
+          &nbsp;<strong>p</strong> for a tile match<br></br>
+          You can also press <strong>space</strong> to start the game and <strong>escape</strong> to exit it.
         </p>
       </div>
     </div>

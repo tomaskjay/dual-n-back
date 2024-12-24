@@ -82,3 +82,7 @@ button:active {
   transform: scale(1.1);
   box-shadow: 0px 0px 8px rgba(76, 175, 80, 0.6);
 }
+
+.instructions {
+  color: #999;
+}
