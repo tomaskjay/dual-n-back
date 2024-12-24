@@ -1,24 +1,41 @@
 import React from "react";
-
 import './board.css';
+import { Position } from "./utils/gameLogic";
 
-const verticalAxis = ["1", "2", "3"];
-const horizontalAxis = ["a", "b", "c"];
+interface BoardProps {
+    highlighted: Position | null; // Current position to highlight
+}
 
-export default function Board() {
-    let board = [];
+const GRID_SIZE = 3;
+
+const Board: React.FC<BoardProps> = ({ highlighted }) => {
+    const verticalAxis = ["1", "2", "3"];
+    const horizontalAxis = ["a", "b", "c"];
+
+    const board = [];
 
     for(let j = verticalAxis.length - 1; j >= 0; j--) {
+        for(let i = 0; i < horizontalAxis.length; i++) {
+            const currentPosition = { row: j, col: i };
+            const isActive = highlighted && 
+                             highlighted.row === currentPosition.row && 
+                             highlighted.col === currentPosition.col;
 
-    for(let i = 0; i < horizontalAxis.length; i++) {
-        board.push(
-        <div className="tile">[{horizontalAxis[i]}{verticalAxis[j]}]</div>
+            board.push(
+                <div 
+                    key={`${horizontalAxis[i]}${verticalAxis[j]}`} 
+                    className={`tile ${isActive ? "active" : ""}`}
+                >
+                </div>
             );
         }
     }
 
-
-    return <div id ="board">
-        {board}
-    </div>;
+    return (
+        <div className="board">
+            {board}
+        </div>
+    );
 }
+
+export default Board;

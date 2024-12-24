@@ -1,17 +1,22 @@
-#board {
+.board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 10px;
-    width: 330px;
-    height: 330px;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
 }
 
-#board .tile {
+.tile {
     background-color: #ADD8E6;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
     border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.tile.active {
+    background-color: #FFC067;
 }
