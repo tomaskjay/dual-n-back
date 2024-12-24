@@ -83,6 +83,15 @@ button:active {
   box-shadow: 0px 0px 8px rgba(76, 175, 80, 0.6);
 }
 
-.instructions {
+.instructions-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.light-gray-text {
   color: #999;
+}
+
+.gray-text {
+  color: #555;
 }

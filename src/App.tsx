@@ -37,6 +37,7 @@ function App() {
   const stopGame = () => {
     setIsGameRunning(false);
     setHighlighted(null);
+    setRound(0);
   };
 
   // Capture keyboard inputs for starting/stopping the game and for user answers
@@ -129,11 +130,11 @@ function App() {
   return (
     <div id="app" style={{ textAlign: "center", padding: "20px" }}>
       <div>
-        <p>Score: {score}</p>
-        <p>Round: {round}/{positions.length}</p>
+        <p className="gray-text">Score: {score}</p>
+        <p className="gray-text">Round: {round}/{positions.length}</p>
         {/* Manually adjustable N-back level */}
         <div style={{ marginTop: "10px" }}>
-          <p>Level {n}</p>
+          <p className="gray-text">Level {n}</p>
           <input
             type="range"
             id="n-back-level"
@@ -158,13 +159,19 @@ function App() {
         </button>
       </div>
 
-      <div style={{ marginTop: "20px", fontSize: "0.9rem" }}>
-        <p className="instructions">
-          Press <strong>w</strong> for a tone match and
-          &nbsp;<strong>p</strong> for a tile match<br></br>
-          You can also press <strong>space</strong> to start the game and <strong>escape</strong> to exit it.
+      <div className="instructions-container" style={{ marginTop: "20px", fontSize: "0.9rem" }}>
+        <p className="gray-text">
+          For a tone match<br />
+          Press <strong>w</strong>
+        </p>
+        <p className="gray-text">
+          For a tile match<br />
+          Press<strong> p</strong><br></br><br></br>
         </p>
       </div>
+      <p className="light-gray-text">
+          You can also press <strong>space</strong> to start the game and <strong>escape</strong> to exit it.
+      </p>
     </div>
   );
 }
