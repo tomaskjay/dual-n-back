@@ -98,32 +98,37 @@ function App() {
       }
 
       if (isGameRunning) {
+        // We only record a guess if we haven't guessed that type yet this round
         const [visualMatch, audioMatch] = checkMatch(round, positions, letters, n);
 
         switch (event.key.toLowerCase()) {
           case "p": // guessed tile
-            didGuessTileRef.current = true;
-            if (visualMatch) {
-              // Correct tile
-              setTileCorrect((prev) => prev + 1);
-              setRightGreenBackground(true);
-              setTimeout(() => setRightGreenBackground(false), 300);
-            } else {
-              // False alarm (tile)
-              setTileFalseAlarms((prev) => prev + 1);
+            if (!didGuessTileRef.current) {
+              didGuessTileRef.current = true;
+              if (visualMatch) {
+                // Correct tile
+                setTileCorrect((prev) => prev + 1);
+                setRightGreenBackground(true);
+                setTimeout(() => setRightGreenBackground(false), 300);
+              } else {
+                // False alarm (tile)
+                setTileFalseAlarms((prev) => prev + 1);
+              }
             }
             break;
 
           case "e": // guessed sound
-            didGuessSoundRef.current = true;
-            if (audioMatch) {
-              // Correct sound
-              setSoundCorrect((prev) => prev + 1);
-              setLeftGreenBackground(true);
-              setTimeout(() => setLeftGreenBackground(false), 300);
-            } else {
-              // False alarm (sound)
-              setSoundFalseAlarms((prev) => prev + 1);
+            if (!didGuessSoundRef.current) {
+              didGuessSoundRef.current = true;
+              if (audioMatch) {
+                // Correct sound
+                setSoundCorrect((prev) => prev + 1);
+                setLeftGreenBackground(true);
+                setTimeout(() => setLeftGreenBackground(false), 300);
+              } else {
+                // False alarm (sound)
+                setSoundFalseAlarms((prev) => prev + 1);
+              }
             }
             break;
 
@@ -135,6 +140,7 @@ function App() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGameRunning, round, positions, letters, n]);
 
   // --------------------------------------------------------------------------
@@ -175,22 +181,36 @@ function App() {
   //                          SCORE CALC
   // --------------------------------------------------------------------------
   const totalRounds = positions.length;
+  const epsilon = 1e-9;
 
-  // Tile scoring
-  const tileNonMatches = totalRounds - tileMatches; // "Opportunities" for tile false alarms
-  const tileHits = tileCorrect;
-  const tileOverallAccuracy =
-    tileMatches === 0
-      ? 0
-      : (tileHits / tileMatches) - (tileFalseAlarms / Math.max(1, tileNonMatches));
+  // For tile
+  const tileNonMatches = totalRounds - tileMatches;
+  const tileNonGuessesCorrect = tileNonMatches - tileFalseAlarms; // didn't guess tile & wasn't a match
 
-  // Sound scoring
+  // For sound
   const soundNonMatches = totalRounds - soundMatches;
-  const soundHits = soundCorrect;
-  const soundOverallAccuracy =
-    soundMatches === 0
-      ? 0
-      : (soundHits / soundMatches) - (soundFalseAlarms / Math.max(1, soundNonMatches));
+  const soundNonGuessesCorrect = soundNonMatches - soundFalseAlarms; // didn't guess sound & wasn't a match
+
+  // The scores are used only at the end, but let's keep them for the final breakdown.
+  const tileScore =
+    100 *
+    ((
+      (tileCorrect / (tileMatches + epsilon)) +
+      0.5 * (tileNonGuessesCorrect / (tileNonMatches + epsilon)) -
+      (tileFalseAlarms / (tileNonMatches + epsilon))
+    ) /
+      1.5);
+
+  const soundScore =
+    100 *
+    ((
+      (soundCorrect / (soundMatches + epsilon)) +
+      0.5 * (soundNonGuessesCorrect / (soundNonMatches + epsilon)) -
+      (soundFalseAlarms / (soundNonMatches + epsilon))
+    ) /
+      1.5);
+
+  const overallScore = (tileScore + soundScore) / 2;
 
   // --------------------------------------------------------------------------
   //                           RENDER
@@ -205,29 +225,37 @@ function App() {
       `}
       style={{ textAlign: "center", padding: "20px" }}
     >
-      {/* SCORES ALWAYS VISIBLE */}
-      <div>
-        <p className="gray-text">
-          Tiles: {(tileOverallAccuracy * 100).toFixed(2)}
-        </p>
-        <p className="gray-text">
-          Sounds: {(soundOverallAccuracy * 100).toFixed(2)}
-        </p>
-        <p className="gray-text">Round: {round}</p>
+      {/* ---------------- LIVE COUNTER DISPLAY ---------------- */}
+      <div style={{ fontSize: "0.9rem", marginBottom: "20px" }}>
+        <h4>Tile Counters</h4>
+        <p className="gray-text">tileCorrect: {tileCorrect}</p>
+        <p className="gray-text">tileMatches: {tileMatches}</p>
+        <p className="gray-text">tileNonGuessesCorrect: {tileNonGuessesCorrect}</p>
+        <p className="gray-text">tileNonMatches: {tileNonMatches}</p>
+        <p className="gray-text">tileFalseAlarms: {tileFalseAlarms}</p>
 
-        <div style={{ marginTop: "10px" }}>
-          <p className="gray-text">Level {n}</p>
-          <input
-            type="range"
-            id="n-back-level"
-            min="1"
-            max="10"
-            value={n}
-            onChange={(e) => setN(Number(e.target.value))}
-            disabled={isGameRunning}
-            style={{ width: "100%", margin: "20px 0" }}
-          />
-        </div>
+        <h4>Sound Counters</h4>
+        <p className="gray-text">soundCorrect: {soundCorrect}</p>
+        <p className="gray-text">soundMatches: {soundMatches}</p>
+        <p className="gray-text">soundNonGuessesCorrect: {soundNonGuessesCorrect}</p>
+        <p className="gray-text">soundNonMatches: {soundNonMatches}</p>
+        <p className="gray-text">soundFalseAlarms: {soundFalseAlarms}</p>
+      </div>
+
+      <p className="gray-text">Round: {round}</p>
+
+      <div style={{ marginTop: "10px" }}>
+        <p className="gray-text">Level {n}</p>
+        <input
+          type="range"
+          id="n-back-level"
+          min="1"
+          max="10"
+          value={n}
+          onChange={(e) => setN(Number(e.target.value))}
+          disabled={isGameRunning}
+          style={{ width: "100%", margin: "20px 0" }}
+        />
       </div>
 
       <Board highlighted={highlighted} />
@@ -259,6 +287,69 @@ function App() {
         You can also press <strong>space</strong> to start the game and{" "}
         <strong>escape</strong> to exit it.
       </p>
+
+      {/* ---------------- SCORE BREAKDOWN AFTER GAME ---------------- */}
+      {!isGameRunning && round > 0 && (
+        <div style={{ marginTop: "30px", textAlign: "left" }}>
+          <h2>Results</h2>
+          <p>
+            <strong>Overall Score:</strong> {overallScore.toFixed(1)}%
+          </p>
+          <p>
+            <strong>Tile Score:</strong> {tileScore.toFixed(1)}%
+            <br />
+            <strong>Sound Score:</strong> {soundScore.toFixed(1)}%
+          </p>
+
+          <h3 style={{ marginTop: "20px" }}>Tile Breakdown:</h3>
+          <p>
+            • Correct Guesses: {tileCorrect}/{tileMatches}{" "}
+            ({(tileMatches === 0 ? 0 : (tileCorrect / tileMatches) * 100).toFixed(0)}%)
+          </p>
+          <p>
+            • False Alarms: {tileFalseAlarms}/{tileNonMatches}{" "}
+            (
+            {tileNonMatches === 0
+              ? 0
+              : ((-tileFalseAlarms / tileNonMatches) * 100).toFixed(0)}
+            %)
+          </p>
+          <p>
+            • Neutral Accuracy: {tileNonGuessesCorrect}/{tileNonMatches}{" "}
+            (
+            {tileNonMatches === 0
+              ? 0
+              : ((tileNonGuessesCorrect / tileNonMatches) * 100).toFixed(0)}
+            %)
+          </p>
+
+          <h3 style={{ marginTop: "20px" }}>Sound Breakdown:</h3>
+          <p>
+            • Correct Guesses: {soundCorrect}/{soundMatches}{" "}
+            (
+            {soundMatches === 0
+              ? 0
+              : ((soundCorrect / soundMatches) * 100).toFixed(0)}
+            %)
+          </p>
+          <p>
+            • False Alarms: {soundFalseAlarms}/{soundNonMatches}{" "}
+            (
+            {soundNonMatches === 0
+              ? 0
+              : ((-soundFalseAlarms / soundNonMatches) * 100).toFixed(0)}
+            %)
+          </p>
+          <p>
+            • Neutral Accuracy: {soundNonGuessesCorrect}/{soundNonMatches}{" "}
+            (
+            {soundNonMatches === 0
+              ? 0
+              : ((soundNonGuessesCorrect / soundNonMatches) * 100).toFixed(0)}
+            %)
+          </p>
+        </div>
+      )}
     </div>
   );
 }
