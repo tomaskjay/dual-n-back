@@ -11,15 +11,17 @@ import {
 function App() {
   const [n, setN] = useState(2);
 
-  // Track actual matches in the sequence
+  // Track total matches (actual occurrences)
   const [tileMatches, setTileMatches] = useState(0);
   const [soundMatches, setSoundMatches] = useState(0);
 
-  // Track correct/wrong guesses
+  // Track correct guesses
   const [tileCorrect, setTileCorrect] = useState(0);
-  const [tileWrong, setTileWrong] = useState(0);
   const [soundCorrect, setSoundCorrect] = useState(0);
-  const [soundWrong, setSoundWrong] = useState(0);
+
+  // Track false alarms specifically (player guessed but no match)
+  const [tileFalseAlarms, setTileFalseAlarms] = useState(0);
+  const [soundFalseAlarms, setSoundFalseAlarms] = useState(0);
 
   // Round control
   const [round, setRound] = useState(0);
@@ -28,13 +30,11 @@ function App() {
   const [highlighted, setHighlighted] = useState<Position | null>(null);
   const [isGameRunning, setIsGameRunning] = useState(false);
 
-  // Flash states (red = wrong/missed, green = correct)
-  const [leftBackground, setLeftBackground] = useState(false);   // audio side
-  const [rightBackground, setRightBackground] = useState(false); // tile side
-  const [leftGreenBackground, setLeftGreenBackground] = useState(false);   
-  const [rightGreenBackground, setRightGreenBackground] = useState(false);  
+  // **Green** flash states (correct guesses)
+  const [leftGreenBackground, setLeftGreenBackground] = useState(false);   // correct sound
+  const [rightGreenBackground, setRightGreenBackground] = useState(false); // correct tile
 
-  // --- Refs to track "did we guess this round?" without causing re-renders ---
+  // Keep track of whether the player guessed tile or sound in the current round
   const didGuessTileRef = useRef(false);
   const didGuessSoundRef = useRef(false);
 
@@ -46,25 +46,26 @@ function App() {
     setPositions(newPositions);
     setLetters(newLetters);
 
-    // Reset states
+    // Reset round and game state
     setRound(0);
     setHighlighted(null);
     setIsGameRunning(true);
 
+    // Reset match counters
     setTileMatches(0);
     setSoundMatches(0);
-    setTileCorrect(0);
-    setTileWrong(0);
-    setSoundCorrect(0);
-    setSoundWrong(0);
 
-    // Reset flash states
-    setLeftBackground(false);
-    setRightBackground(false);
+    // Reset correct/false alarm counters
+    setTileCorrect(0);
+    setSoundCorrect(0);
+    setTileFalseAlarms(0);
+    setSoundFalseAlarms(0);
+
+    // Reset green flashes
     setLeftGreenBackground(false);
     setRightGreenBackground(false);
 
-    // Reset refs
+    // Reset guess flags
     didGuessTileRef.current = false;
     didGuessSoundRef.current = false;
   };
@@ -96,7 +97,6 @@ function App() {
         return;
       }
 
-      // If the game is running, check user input
       if (isGameRunning) {
         const [visualMatch, audioMatch] = checkMatch(round, positions, letters, n);
 
@@ -104,30 +104,26 @@ function App() {
           case "p": // guessed tile
             didGuessTileRef.current = true;
             if (visualMatch) {
-              // correct tile
+              // Correct tile
               setTileCorrect((prev) => prev + 1);
               setRightGreenBackground(true);
               setTimeout(() => setRightGreenBackground(false), 300);
             } else {
-              // wrong tile
-              setTileWrong((prev) => prev + 1);
-              setRightBackground(true);
-              setTimeout(() => setRightBackground(false), 300);
+              // False alarm (tile)
+              setTileFalseAlarms((prev) => prev + 1);
             }
             break;
 
-          case "w": // guessed sound
+          case "e": // guessed sound
             didGuessSoundRef.current = true;
             if (audioMatch) {
-              // correct sound
+              // Correct sound
               setSoundCorrect((prev) => prev + 1);
               setLeftGreenBackground(true);
               setTimeout(() => setLeftGreenBackground(false), 300);
             } else {
-              // wrong sound
-              setSoundWrong((prev) => prev + 1);
-              setLeftBackground(true);
-              setTimeout(() => setLeftBackground(false), 300);
+              // False alarm (sound)
+              setSoundFalseAlarms((prev) => prev + 1);
             }
             break;
 
@@ -145,54 +141,30 @@ function App() {
   //                          ROUND FLOW
   // --------------------------------------------------------------------------
   useEffect(() => {
-    // If the game isn't running, do nothing
     if (!isGameRunning) return;
 
-    // If we've finished all positions, stop
     if (round >= positions.length) {
       setIsGameRunning(false);
       return;
     }
 
-    // Check if there's a tile or sound match this round
     const [visualMatch, audioMatch] = checkMatch(round, positions, letters, n);
 
     // Increment the "actual match" counters
-    if (visualMatch) {
-      setTileMatches((prev) => prev + 1);
-    }
-    if (audioMatch) {
-      setSoundMatches((prev) => prev + 1);
-    }
+    if (visualMatch) setTileMatches((prev) => prev + 1);
+    if (audioMatch) setSoundMatches((prev) => prev + 1);
 
-    // At the start of the round, highlight and play
+    // Highlight tile and play sound
     setHighlighted(positions[round]);
     playLetter(letters[round]);
 
-    // Reset the guess refs to false at round start
+    // Reset guess flags for this new round
     didGuessTileRef.current = false;
     didGuessSoundRef.current = false;
 
-    // After 2 seconds, end the round
+    // After 2 seconds, move to the next round
     const timer = setTimeout(() => {
-      // Stop highlighting
       setHighlighted(null);
-
-      // Did the user MISS a tile match?
-      if (visualMatch && !didGuessTileRef.current) {
-        setTileWrong((prev) => prev + 1);
-        setRightBackground(true);
-        setTimeout(() => setRightBackground(false), 300);
-      }
-
-      // Did the user MISS a sound match?
-      if (audioMatch && !didGuessSoundRef.current) {
-        setSoundWrong((prev) => prev + 1);
-        setLeftBackground(true);
-        setTimeout(() => setLeftBackground(false), 300);
-      }
-
-      // Move to next round
       setRound((prev) => prev + 1);
     }, 2000);
 
@@ -202,15 +174,23 @@ function App() {
   // --------------------------------------------------------------------------
   //                          SCORE CALC
   // --------------------------------------------------------------------------
-  const tileScorePercent =
+  const totalRounds = positions.length;
+
+  // Tile scoring
+  const tileNonMatches = totalRounds - tileMatches; // "Opportunities" for tile false alarms
+  const tileHits = tileCorrect;
+  const tileOverallAccuracy =
     tileMatches === 0
       ? 0
-      : Math.max(0, (tileCorrect - tileWrong) / tileMatches) * 100;
+      : (tileHits / tileMatches) - (tileFalseAlarms / Math.max(1, tileNonMatches));
 
-  const soundScorePercent =
+  // Sound scoring
+  const soundNonMatches = totalRounds - soundMatches;
+  const soundHits = soundCorrect;
+  const soundOverallAccuracy =
     soundMatches === 0
       ? 0
-      : Math.max(0, (soundCorrect - soundWrong) / soundMatches) * 100;
+      : (soundHits / soundMatches) - (soundFalseAlarms / Math.max(1, soundNonMatches));
 
   // --------------------------------------------------------------------------
   //                           RENDER
@@ -218,9 +198,8 @@ function App() {
   return (
     <div
       id="app"
+      // Only green classes for correct guesses
       className={`
-        ${leftBackground ? "left-red" : ""} 
-        ${rightBackground ? "right-red" : ""}
         ${leftGreenBackground ? "left-green" : ""}
         ${rightGreenBackground ? "right-green" : ""}
       `}
@@ -228,8 +207,12 @@ function App() {
     >
       {/* SCORES ALWAYS VISIBLE */}
       <div>
-        <p className="gray-text">Tiles: {tileScorePercent.toFixed(2)}</p>
-        <p className="gray-text">Sounds: {soundScorePercent.toFixed(2)}</p>
+        <p className="gray-text">
+          Tiles: {(tileOverallAccuracy * 100).toFixed(2)}
+        </p>
+        <p className="gray-text">
+          Sounds: {(soundOverallAccuracy * 100).toFixed(2)}
+        </p>
         <p className="gray-text">Round: {round}</p>
 
         <div style={{ marginTop: "10px" }}>
@@ -249,7 +232,6 @@ function App() {
 
       <Board highlighted={highlighted} />
 
-      {/* START / STOP */}
       <div style={{ marginTop: "20px" }}>
         <button onClick={startGame} disabled={isGameRunning}>
           Start
@@ -259,14 +241,13 @@ function App() {
         </button>
       </div>
 
-      {/* INSTRUCTIONS */}
       <div
         className="instructions-container"
         style={{ marginTop: "20px", fontSize: "0.9rem" }}
       >
         <p className="gray-text">
           For a tone match<br />
-          Press <strong>w</strong>
+          Press <strong>e</strong>
         </p>
         <p className="gray-text">
           For a tile match<br />
