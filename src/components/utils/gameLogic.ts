@@ -7,41 +7,21 @@ export const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 export const GRID_SIZE = 3;
 export const INITIAL_N = 1;
 
-//Makes a random frequency based on the letter
-//"A" has the lowest frequency, "I" the highest.
-export function getLetterFrequency(letter: string): number {
-  const baseFreq = 400;
-  const step = 50; 
-  const index = LETTERS.indexOf(letter);
-  return baseFreq + index * step;
-}
-
-// Plays letter sound
+/**
+ * Speaks the letter out loud instead of playing a tone.
+ */
 export function playLetter(letter: string): void {
-  const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-  const audioCtx = new AudioContext();
+  const utter = new SpeechSynthesisUtterance(letter);
+  // Optional: Adjust pitch, rate, voice, etc.
+  // utter.pitch = 1.0;
+  // utter.rate = 1.0;
+  // utter.voice = speechSynthesis.getVoices()[0]; // Example of picking a specific voice
 
-  const oscillator = audioCtx.createOscillator();
-  const gainNode = audioCtx.createGain();
-
-  oscillator.frequency.value = getLetterFrequency(letter);
-
-  oscillator.connect(gainNode);
-  gainNode.connect(audioCtx.destination);
-
-  // Setting volume
-  gainNode.gain.value = 0.3;
-
-  oscillator.start();
-
-  setTimeout(() => {
-    oscillator.stop();
-    audioCtx.close();
-  }, 500);
+  speechSynthesis.speak(utter);
 }
 
 /**
- * Makes a random sequence of letters and positions
+ * Makes a random sequence of letters and positions.
  * @param steps - Number of steps (rounds) in the game.
  */
 export function generateSequence(steps: number): {
@@ -62,9 +42,11 @@ export function generateSequence(steps: number): {
 }
 
 /**
- * @param posArr - positions array
- * @param letArr - letters array
- * @param NVal - n-back value
+ * Checks whether there's a match in tile (visual) or letter (audio) N steps back.
+ * @param currentRound - index of the current step
+ * @param posArr - array of tile positions
+ * @param letArr - array of letters
+ * @param NVal - the N-back value
  */
 export function checkMatch(
   currentRound: number,
@@ -73,11 +55,15 @@ export function checkMatch(
   NVal: number
 ): [boolean, boolean] {
   if (currentRound < NVal) {
-    return [false, false]; // Makes sure that we don't check for matches before N rounds
+    // Not enough history yet to compare
+    return [false, false];
   }
+
   const visualMatch =
     posArr[currentRound].row === posArr[currentRound - NVal].row &&
     posArr[currentRound].col === posArr[currentRound - NVal].col;
+
   const audioMatch = letArr[currentRound] === letArr[currentRound - NVal];
+
   return [visualMatch, audioMatch];
 }
