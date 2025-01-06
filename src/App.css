@@ -68,8 +68,13 @@ button:hover {
   appearance: none;
   width: 20rem;
   height: 8px;
-  background: linear-gradient(to right, #87a3f8 0%, #87a3f8 var(--value), #d3d3d3 var(--value), #d3d3d3 100%);
-  /* background: linear-gradient(to right, #a9a9a9, #d3d3d3); */
+  background: linear-gradient(
+    to right,
+    #87a3f8 0%,
+    #87a3f8 var(--value),
+    #d3d3d3 var(--value),
+    #d3d3d3 100%
+  );
   border-radius: 5px;
   outline: none;
   margin-top: 10px;
@@ -99,7 +104,6 @@ button:hover {
   transform: scale(1.2);
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
-
 
 /* Add gap between instructions */
 .instructions-container {
@@ -144,4 +148,21 @@ button:hover {
 
 button:focus {
   outline: none;
+}
+
+/* Bounce animation class */
+.bounce {
+  animation: bounce 0.8s;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-15px);
+  }
+  60% {
+    transform: translateY(-7px);
+  }
 }
