@@ -66,31 +66,40 @@ button:hover {
 
 #n-back-level {
   appearance: none;
-  /* Make the slider longer */
-  width: 400px;
+  width: 20rem;
   height: 8px;
-  background: linear-gradient(to right, #a9a9a9, #d3d3d3);
+  background: linear-gradient(to right, #87a3f8 0%, #87a3f8 var(--value), #d3d3d3 var(--value), #d3d3d3 100%);
+  /* background: linear-gradient(to right, #a9a9a9, #d3d3d3); */
   border-radius: 5px;
   outline: none;
   margin-top: 10px;
 }
 
-#n-back-level::-webkit-slider-thumb,
-#n-back-level::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  background-color: #4caf50;
+#n-back-level::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: rgb(190, 96, 190);
   border-radius: 50%;
-  border: 2px solid #fff;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+#n-back-level::-moz-range-thumb {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: rgb(190, 96, 190);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* existing code */
 #n-back-level::-webkit-slider-thumb:hover,
 #n-back-level::-moz-range-thumb:hover {
   transform: scale(1.2);
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
+
 
 /* Add gap between instructions */
 .instructions-container {
@@ -131,4 +140,8 @@ button:hover {
 
 .results-container {
   text-align: left;
+}
+
+button:focus {
+  outline: none;
 }

@@ -271,6 +271,26 @@ function App() {
 
   const overallScore = (tileScore + soundScore) / 2;
 
+  useEffect(() => {
+    const slider = document.getElementById('n-back-level') as HTMLInputElement;
+
+    const updateSliderBackground = () => {
+      const value = ((slider.valueAsNumber - parseInt(slider.min)) / (parseInt(slider.max) - parseInt(slider.min))) * 100;
+      slider.style.setProperty('--value', `${value}%`);
+    };
+
+    if (slider) {
+      slider.addEventListener('input', updateSliderBackground);
+      updateSliderBackground(); // Initialize on component mount
+    }
+
+    return () => {
+      if (slider) {
+        slider.removeEventListener('input', updateSliderBackground);
+      }
+    };
+  }, [isGameRunning]); // Add isGameRunning as a dependency
+
   // --------------------------------------------------------------------------
   //                           RENDER
   // --------------------------------------------------------------------------
@@ -295,7 +315,6 @@ function App() {
             max="10"
             value={n}
             onChange={(e) => setN(Number(e.target.value))}
-            style={{ width: "400px" }}
           />
         </div>
       )}
