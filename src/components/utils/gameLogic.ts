@@ -3,20 +3,15 @@ export interface Position {
   col: number;
 }
 
-export const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
+export const LETTERS = ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India"];
 export const GRID_SIZE = 3;
-export const INITIAL_N = 1;
+export const INITIAL_N = 2;
 
 /**
  * Speaks the letter out loud instead of playing a tone.
  */
 export function playLetter(letter: string): void {
-  const utter = new SpeechSynthesisUtterance(letter.toLowerCase());
-  // Optional: Adjust pitch, rate, voice, etc.
-  // utter.pitch = 1.0;
-  // utter.rate = 1.0;
-  // utter.voice = speechSynthesis.getVoices()[0]; // Example of picking a specific voice
-
+  const utter = new SpeechSynthesisUtterance(letter);
   speechSynthesis.speak(utter);
 }
 
