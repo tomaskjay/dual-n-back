@@ -31,7 +31,7 @@ function App() {
   const [isGameRunning, setIsGameRunning] = useState(false);
 
   // Green flash states
-  const [leftGreenBackground, setLeftGreenBackground] = useState(false);  // correct sound
+  const [leftGreenBackground, setLeftGreenBackground] = useState(false); // correct sound
   const [rightGreenBackground, setRightGreenBackground] = useState(false); // correct tile
 
   // Keep track of whether the player guessed tile or sound
@@ -106,13 +106,10 @@ function App() {
       // Check if correct
       const [visualMatch, audioMatch] = checkMatch(round, positions, letters, n);
       if (audioMatch) {
-        // Correct sound
         setSoundCorrect((prev) => prev + 1);
-
-        // Turn on left half green; no auto-off here
+        // Turn on left half green
         setLeftGreenBackground(true);
       } else {
-        // False alarm
         setSoundFalseAlarms((prev) => prev + 1);
       }
     }
@@ -137,8 +134,7 @@ function App() {
       const [visualMatch, audioMatch] = checkMatch(round, positions, letters, n);
       if (visualMatch) {
         setTileCorrect((prev) => prev + 1);
-
-        // Turn on right half green; no auto-off here
+        // Turn on right half green
         setRightGreenBackground(true);
       } else {
         setTileFalseAlarms((prev) => prev + 1);
@@ -212,12 +208,8 @@ function App() {
     // After 2 seconds, remove highlight & remove any green background
     const timer = setTimeout(() => {
       setHighlighted(null);
-
-      // Turn off any green from correct guesses
       setLeftGreenBackground(false);
       setRightGreenBackground(false);
-
-      // Move to next round
       setRound((prev) => prev + 1);
     }, 2000);
 
@@ -232,13 +224,12 @@ function App() {
 
   // For tile
   const tileNonMatches = totalRounds - tileMatches;
-  const tileNonGuessesCorrect = tileNonMatches - tileFalseAlarms; // didn't guess tile & wasn't a match
+  const tileNonGuessesCorrect = tileNonMatches - tileFalseAlarms;
 
   // For sound
   const soundNonMatches = totalRounds - soundMatches;
-  const soundNonGuessesCorrect = soundNonMatches - soundFalseAlarms; // didn't guess sound & wasn't a match
+  const soundNonGuessesCorrect = soundNonMatches - soundFalseAlarms;
 
-  // Final scoring
   const tileScore =
     100 *
     ((tileCorrect / (tileMatches + epsilon) +
@@ -260,23 +251,21 @@ function App() {
   // --------------------------------------------------------------------------
   useEffect(() => {
     const slider = document.getElementById("n-back-level") as HTMLInputElement;
+    if (!slider) return;
 
     const updateSliderBackground = () => {
-      const value =
+      const percentage =
         ((slider.valueAsNumber - parseInt(slider.min)) /
           (parseInt(slider.max) - parseInt(slider.min))) *
         100;
-      slider.style.setProperty("--value", `${value}%`);
+      slider.style.setProperty("--value", `${percentage}%`);
     };
 
-    if (slider) {
-      slider.addEventListener("input", updateSliderBackground);
-      updateSliderBackground();
-    }
+    slider.addEventListener("input", updateSliderBackground);
+    updateSliderBackground();
+
     return () => {
-      if (slider) {
-        slider.removeEventListener("input", updateSliderBackground);
-      }
+      slider.removeEventListener("input", updateSliderBackground);
     };
   }, [isGameRunning]);
 

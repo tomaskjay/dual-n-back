@@ -14,7 +14,7 @@
 /* Foreground container on top */
 .main-content {
   position: relative;
-  z-index: 2; 
+  z-index: 2;
 }
 
 /* This is the 2-second fade, ensuring just one smooth animation per round */
@@ -40,10 +40,10 @@
 
 @keyframes fade {
   0% {
-    opacity: 1;  /* Start visible */
+    opacity: 1; /* Start visible */
   }
   100% {
-    opacity: 0;  /* Fade out by the end of 2s */
+    opacity: 0; /* Fade out by the end of 2s */
   }
 }
 
@@ -112,6 +112,7 @@ button:hover {
 .instructions-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 2rem;
 }
 
@@ -151,6 +152,15 @@ button:hover {
 
 button:focus {
   outline: none;
+}
+
+/* Remove iOS gray highlight, disable text selection, etc. */
+.clickable-instruction {
+  cursor: pointer;
+  user-select: none;               /* standard user-select */
+  -webkit-user-select: none;       /* iOS Safari */
+  -webkit-tap-highlight-color: transparent; 
+  touch-action: manipulation;      /* allow multi-touch on separate elements */
 }
 
 /* Bounce animation class */
