@@ -160,7 +160,7 @@ button:focus {
   user-select: none;               /* standard user-select */
   -webkit-user-select: none;       /* iOS Safari */
   -webkit-tap-highlight-color: transparent; 
-  touch-action: manipulation;      /* allow multi-touch on separate elements */
+  touch-action: none;      /* allow multi-touch on separate elements */
 }
 
 /* Bounce animation class */

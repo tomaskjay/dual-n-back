@@ -395,7 +395,10 @@ function App() {
             className={`gray-text clickable-instruction ${
               toneClicked ? "clicked" : ""
             } ${toneBounce ? "bounce" : ""}`}
-            onClick={guessSound}
+            onPointerDown={(e) => {
+              e.preventDefault(); // prevent any default text selection
+              guessSound();
+            }}
           >
             For a tone match
             <br />
@@ -407,7 +410,10 @@ function App() {
             className={`gray-text clickable-instruction ${
               tileClicked ? "clicked" : ""
             } ${tileBounce ? "bounce" : ""}`}
-            onClick={guessTile}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              guessTile();
+            }}
           >
             For a tile match
             <br />
