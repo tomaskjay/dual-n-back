@@ -50,7 +50,7 @@ function App() {
   //                         START / STOP
   // --------------------------------------------------------------------------
   const startGame = () => {
-    const { positions: newPositions, letters: newLetters } = generateSequence(20);
+    const { positions: newPositions, letters: newLetters } = generateSequence(30);
     setPositions(newPositions);
     setLetters(newLetters);
 
