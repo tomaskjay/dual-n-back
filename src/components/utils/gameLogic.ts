@@ -11,7 +11,7 @@ export const INITIAL_N = 1;
  * Speaks the letter out loud instead of playing a tone.
  */
 export function playLetter(letter: string): void {
-  const utter = new SpeechSynthesisUtterance(letter);
+  const utter = new SpeechSynthesisUtterance(letter.toLowerCase());
   // Optional: Adjust pitch, rate, voice, etc.
   // utter.pitch = 1.0;
   // utter.rate = 1.0;

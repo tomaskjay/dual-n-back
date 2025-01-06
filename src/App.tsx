@@ -365,8 +365,8 @@ function App() {
               </p>
             </div>
           ) : (
-            <div style={{ height: "100%", display: "flex", alignItems: "center" }}>
-              <p style={{ margin: "auto", color: "#777" }}>
+            <div className="instructions-text-container">
+              <p className="light-gray-text">
                 <strong>Start</strong> or <strong>space</strong> starts the game.
                 <br />
                 <br />
