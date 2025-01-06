@@ -18,13 +18,11 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  height: 100%; /* Ensure it takes full height of the available space */
-  width: 100%; /* Ensure it takes full width of the available space */
-  position: relative; /* Ensures child elements are positioned relative to this */
+  height: 100%; 
+  width: 100%;
+  position: relative;
 }
 
-
-/* This is the 2-second fade, ensuring just one smooth animation per round */
 .left-green::before,
 .right-green::after {
   content: '';
@@ -33,8 +31,8 @@
   bottom: 0;
   width: 50%;
   background-color: rgba(0, 255, 0, 0.3);
-  animation: fade 2s ease-in-out; /* match 2s in round flow */
-  z-index: 1; /* behind .main-content, above background */
+  animation: fade 2s ease-in-out;
+  z-index: 1;
 }
 
 .left-green::before {
@@ -47,10 +45,10 @@
 
 @keyframes fade {
   0% {
-    opacity: 1; /* Start visible */
+    opacity: 1;
   }
   100% {
-    opacity: 0; /* Fade out by the end of 2s */
+    opacity: 0;
   }
 }
 
@@ -129,10 +127,10 @@ button:hover {
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin: 0 auto; /* Horizontally center in its parent container */
-  height: 15rem; /* Adjust height for vertical spacing */
-  width: 100%; /* Ensure it spans the full width of its parent container */
-  position: relative; /* Ensure it's positioned relative to its parent */
+  margin: 0 auto;
+  height: 15rem;
+  width: 100%;
+  position: relative;
 }
 
 
@@ -144,7 +142,6 @@ button:hover {
   color: #555;
 }
 
-/* Fade-in animation for board/results and button */
 .fade {
   animation: fadeIn 0.5s forwards;
 }
@@ -174,16 +171,15 @@ button:focus {
   outline: none;
 }
 
-/* Remove iOS gray highlight, disable text selection, etc. */
+/* Removes iOS gray highlight*/
 .clickable-instruction {
   cursor: pointer;
-  user-select: none;               /* standard user-select */
-  -webkit-user-select: none;       /* iOS Safari */
+  user-select: none;
+  -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent; 
-  touch-action: none;      /* allow multi-touch on separate elements */
+  touch-action: none;
 }
 
-/* Bounce animation class */
 .bounce {
   animation: bounce 0.8s;
 }

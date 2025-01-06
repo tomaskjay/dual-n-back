@@ -46,7 +46,6 @@ function App() {
   const [toneBounce, setToneBounce] = useState(false);
   const [tileBounce, setTileBounce] = useState(false);
 
-  // --------------------------------------------------------------------------
   //                         START / STOP
   // --------------------------------------------------------------------------
   const startGame = () => {
@@ -84,11 +83,9 @@ function App() {
     setRound(0);
   };
 
-  // --------------------------------------------------------------------------
   //             HELPER FUNCTIONS FOR CLICKING “TONE MATCH” OR “TILE MATCH”
   // --------------------------------------------------------------------------
   const guessSound = () => {
-    // Provide some “clicked” feedback
     setToneClicked(true);
     setTimeout(() => setToneClicked(false), 150);
 
@@ -116,7 +113,6 @@ function App() {
   };
 
   const guessTile = () => {
-    // Provide some “clicked” feedback
     setTileClicked(true);
     setTimeout(() => setTileClicked(false), 150);
 
@@ -142,7 +138,6 @@ function App() {
     }
   };
 
-  // --------------------------------------------------------------------------
   //                      HANDLE KEY PRESSES
   // --------------------------------------------------------------------------
   useEffect(() => {
@@ -180,7 +175,6 @@ function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isGameRunning, round, positions, letters, n]);
 
-  // --------------------------------------------------------------------------
   //                          ROUND FLOW
   // --------------------------------------------------------------------------
   useEffect(() => {
@@ -216,7 +210,6 @@ function App() {
     return () => clearTimeout(timer);
   }, [isGameRunning, round, positions, letters, n]);
 
-  // --------------------------------------------------------------------------
   //                          SCORE CALC
   // --------------------------------------------------------------------------
   const totalRounds = positions.length;
@@ -246,7 +239,6 @@ function App() {
 
   const overallScore = (tileScore + soundScore) / 2;
 
-  // --------------------------------------------------------------------------
   //                         SLIDER BACKGROUND
   // --------------------------------------------------------------------------
   useEffect(() => {
@@ -269,8 +261,7 @@ function App() {
     };
   }, [isGameRunning]);
 
-  // --------------------------------------------------------------------------
-  //                           RENDER
+  //                           RENDERING
   // --------------------------------------------------------------------------
   return (
     <div
