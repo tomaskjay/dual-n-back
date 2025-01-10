@@ -1,14 +1,6 @@
 // Just so i dont loose anything
-import React, { useState, useEffect, useRef } from "react";
-import Board from "./components/board";
-import {
-  Position,
-  generateSequence,
-  playLetter,
-  checkMatch,
-} from "./components/utils/gameLogic";
+
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom'
-import Header from "./components/Header";
 import Signup from "./components/SignUp/Signup";
 import Signin from "./components/SignIn/Signin";
 import Home from "./components/Home";
