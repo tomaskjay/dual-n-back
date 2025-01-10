@@ -1,3 +1,4 @@
+// Just so i dont loose anything
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Board from "./components/board";
