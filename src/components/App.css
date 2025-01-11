@@ -1,4 +1,4 @@
-#app {
+#home {
   position: relative; /* needed for ::before/::after to position absolutely */
   z-index: 0;
   display: flex;
