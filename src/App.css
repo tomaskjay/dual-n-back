@@ -1,5 +1,5 @@
 #app {
-  position: relative; /* needed for ::before/::after to position absolutely */
+  position: relative;
   z-index: 0;
   display: flex;
   flex-direction: column;
