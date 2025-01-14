@@ -9,7 +9,7 @@ import {
 } from "./components/utils/gameLogic";
 
 function App() {
-  const [n, setN] = useState(2);
+  const [n, setN] = useState(1);
 
   // Track total matches (actual occurrences)
   const [tileMatches, setTileMatches] = useState(0);
