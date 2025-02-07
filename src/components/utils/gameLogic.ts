@@ -3,7 +3,7 @@ export interface Position {
   col: number;
 }
 
-export const LETTERS = ["Adam", "Boy", "Charlie", "David", "Edward", "Frank", "George", "Henry", "Ida"];
+export const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 export const GRID_SIZE = 3;
 export const INITIAL_N = 2;
 
